@@ -1,0 +1,6 @@
+.env*
+.expo
+dist
+dist-tests
+node_modules
+pnpm-debug.log

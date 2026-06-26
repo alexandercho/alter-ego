@@ -1,0 +1,25 @@
+{
+    "name": "expresso",
+    "private": true,
+    "packageManager": "pnpm@10.12.1",
+    "engines": {
+        "node": "26.x"
+    },
+    "scripts": {
+        "install:all": "\"$npm_node_execpath\" --experimental-strip-types scripts/install.ts",
+        "dev": "\"$npm_node_execpath\" --experimental-strip-types scripts/start.ts",
+        "start": "\"$npm_node_execpath\" --experimental-strip-types scripts/start.ts",
+        "start:backend": "pnpm --dir backend dev",
+        "start:frontend": "pnpm --dir frontend start",
+        "test:api": "pnpm --dir backend test:api",
+        "test:api:frontend": "pnpm --dir backend test:api:frontend",
+        "test:api:latest": "pnpm --dir backend test:api:latest",
+        "test:api:legacy": "pnpm --dir backend test:api:legacy",
+        "test:api:deprecated": "pnpm --dir backend test:api:deprecated",
+        "typecheck": "\"$npm_node_execpath\" ./node_modules/typescript/bin/tsc --noEmit"
+    },
+    "devDependencies": {
+        "@types/node": "^24.10.1",
+        "typescript": "^5.9.3"
+    }
+}

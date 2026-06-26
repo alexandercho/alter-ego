@@ -1,0 +1,44 @@
+{
+    "name": "backend",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Minimal Express backend skeleton with placeholder CRUD routes and a health check.",
+    "main": "dist/server.js",
+    "packageManager": "pnpm@10.12.1",
+    "engines": {
+        "node": "26.x"
+    },
+    "imports": {
+        "#app": "./dist/app.js",
+        "#controllers/*": "./dist/controllers/*.js",
+        "#data/*": "./dist/data/*.js",
+        "#middleware/*": "./dist/middleware/*.js",
+        "#routes": "./dist/routes/index.js",
+        "#routes/*": "./dist/routes/*.js",
+        "#utils/*": "./dist/utils/*.js"
+    },
+    "scripts": {
+        "build": "\"$npm_node_execpath\" ./node_modules/typescript/bin/tsc",
+        "start": "\"$npm_node_execpath\" ./node_modules/typescript/bin/tsc && \"$npm_node_execpath\" dist/server.js",
+        "dev": "\"$npm_node_execpath\" ./node_modules/typescript/bin/tsc && \"$npm_node_execpath\" --watch dist/server.js",
+        "lint": "\"$npm_node_execpath\" ./node_modules/eslint/bin/eslint.js src",
+        "lint:fix": "\"$npm_node_execpath\" ./node_modules/eslint/bin/eslint.js src --fix",
+        "test": "\"$npm_node_execpath\" ./node_modules/typescript/bin/tsc && \"$npm_node_execpath\" ./node_modules/typescript/bin/tsc --project tsconfig.tests.json && \"$npm_node_execpath\" --test dist-tests/tests/api/*.test.js",
+        "typecheck": "\"$npm_node_execpath\" ./node_modules/typescript/bin/tsc --noEmit",
+        "test:api": "\"$npm_node_execpath\" ./node_modules/typescript/bin/tsc && \"$npm_node_execpath\" ./node_modules/typescript/bin/tsc --project tsconfig.tests.json && \"$npm_node_execpath\" --test dist-tests/tests/api/*.test.js",
+        "test:api:frontend": "\"$npm_node_execpath\" ./node_modules/typescript/bin/tsc && \"$npm_node_execpath\" ./node_modules/typescript/bin/tsc --project tsconfig.tests.json && \"$npm_node_execpath\" --test dist-tests/tests/api/frontend-contract.test.js",
+        "test:api:latest": "\"$npm_node_execpath\" ./node_modules/typescript/bin/tsc && \"$npm_node_execpath\" ./node_modules/typescript/bin/tsc --project tsconfig.tests.json && \"$npm_node_execpath\" --test dist-tests/tests/api/latest.test.js",
+        "test:api:legacy": "\"$npm_node_execpath\" ./node_modules/typescript/bin/tsc && \"$npm_node_execpath\" ./node_modules/typescript/bin/tsc --project tsconfig.tests.json && \"$npm_node_execpath\" --test dist-tests/tests/api/legacy.test.js",
+        "test:api:deprecated": "\"$npm_node_execpath\" ./node_modules/typescript/bin/tsc && \"$npm_node_execpath\" ./node_modules/typescript/bin/tsc --project tsconfig.tests.json && \"$npm_node_execpath\" --test dist-tests/tests/api/deprecated.test.js"
+    },
+    "dependencies": {
+        "express": "^5.2.1"
+    },
+    "devDependencies": {
+        "@typescript-eslint/parser": "^8.50.0",
+        "@types/express": "^5.0.6",
+        "@types/node": "^24.10.1",
+        "eslint": "^9.39.1",
+        "typescript": "^5.9.3"
+    }
+}

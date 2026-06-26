@@ -1,0 +1,49 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "lib": [
+            "ES2024"
+        ],
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "noImplicitReturns": true,
+        "outDir": "dist",
+        "paths": {
+            "#app": [
+                "./src/app.ts"
+            ],
+            "#controllers/*": [
+                "./src/controllers/*.ts"
+            ],
+            "#data/*": [
+                "./src/data/*.ts"
+            ],
+            "#middleware/*": [
+                "./src/middleware/*.ts"
+            ],
+            "#routes": [
+                "./src/routes/index.ts"
+            ],
+            "#routes/*": [
+                "./src/routes/*.ts"
+            ],
+            "#utils/*": [
+                "./src/utils/*.ts"
+            ]
+        },
+        "resolveJsonModule": true,
+        "rootDir": "src",
+        "skipLibCheck": true,
+        "strict": true,
+        "target": "ES2024"
+    },
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules"
+    ]
+}
