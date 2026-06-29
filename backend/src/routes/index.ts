@@ -1,6 +1,9 @@
 import express from 'express';
 
 import {
+    verifyGoogleAuth
+} from '#controllers/auth-controller';
+import {
     deleteResource,
     getResource,
     postResource,
@@ -16,6 +19,8 @@ const router = express.Router();
 router.use(requestMiddleware);
 
 router.get('/health', getHealth);
+
+router.post('/api/v1/auth/google', verifyGoogleAuth);
 
 router.route('/api/v1/resource')
     .get(getResource)

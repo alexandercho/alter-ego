@@ -2,8 +2,8 @@ services:
   backend:
     build:
       context: ./backend
-    environment:
-      PORT: 3001
+    env_file:
+      - ./backend/.env.development
     ports:
       - "3001:3001"
     healthcheck:
@@ -15,9 +15,6 @@ services:
   frontend:
     build:
       context: ./frontend
-      args:
-        EXPO_PUBLIC_API_BASE_URL: http://localhost:3001
-        EXPO_PUBLIC_MIN_SUPPORTED_API_VERSION: v1
     depends_on:
       backend:
         condition: service_healthy

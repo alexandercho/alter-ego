@@ -1,98 +1,78 @@
 # Backend Agent (Express)
 
+Apply root instructions first. This file adds backend-only ownership and commands.
+
+---
+
 ## Scope
 
-Owns all Express server behavior.
+Owns Express server behavior in `backend/`, including routes, controllers, middleware, request validation, service logic, data access, backend environment handling, and backend package imports.
+
+Defer frontend API call updates and UI behavior to `frontend/AGENTS.md`. Defer API compatibility test structure to `backend/tests/api/AGENTS.md`.
 
 ---
 
-## Responsibilities
+## Validation Commands
 
-* API routes
-* Middleware
-* Authentication logic (if applicable)
-* Request validation
-* Service layer logic
-* Database access patterns
+Run commands from the repository root unless already inside `backend/`.
 
----
-
-## Architecture Rules
-
-* Routes must stay thin
-* Business logic must live in services
-* Middleware must be reusable and composable
-* Avoid mixing HTTP logic with domain logic
+* Typecheck backend: `pnpm --dir backend typecheck`
+* Lint backend: `pnpm --dir backend lint`
+* Build backend: `pnpm --dir backend build`
+* Run backend API tests: `pnpm --dir backend test:api`
+* Start backend dev server: `pnpm --dir backend dev`
 
 ---
 
-## Folder Expectations (if applicable)
+## Current Backend Structure
 
-* routes/
-* services/
-* middleware/
-* utils/
-
----
-
-## API Design Rules
-
-* Keep endpoints predictable and resource-oriented
-* Avoid excessive nesting in routes
-* Follow the shared refactor rules for code shape and expression style
-* Design endpoints to support the repo contract optimization rules for top-to-bottom rendering priority
-* Expose lightweight, purpose-built requests when specific UI regions need faster delivery than broader shared payloads
-* Keep request and response naming aligned with frontend camelCase usage so payload destructuring stays simple across the contract
+* `src/routes/` -> route registration and URL structure
+* `src/controllers/` -> HTTP request/response translation
+* `src/middleware/` -> reusable Express middleware
+* `src/data/` -> data sources and persistence-facing code
+* `src/utils/` -> small backend-only helpers that do not fit a domain folder
 
 ---
 
-## Feature Change Strategy
+## Express Layering
 
-* When changing a feature, prefer extending an existing supported endpoint in a backward-compatible way first if the endpoint name still makes intuitive sense
-* Extending an existing endpoint is preferred only when the added response or request handling would not create noticeable perceived latency for low-latency UI surfaces such as top-of-screen home components
-* Optional params and falsy-default behavior can be used to extend existing endpoints safely when that does not create confusing or breaking behavior
-* If the latency increase or payload growth would be noticeable, create a new endpoint instead of overloading the existing one
-* If a feature requires splitting requests apart or dropping unnecessary data in a way that noticeably improves latency, the previous broader endpoint should be considered for legacy support and the new focused endpoints should be added
-* Never repurpose an existing endpoint in a way that would break older still-supported frontend versions
-* Additive changes are acceptable within the same major version, but removing data or behavior requires a major version update
-* Only move behavior into legacy or deprecation when the current frontend no longer uses it and deprecation is explicitly approved
-* If a function or route already moved into legacy is used again by the current frontend within the same major version, move that route or function back into latest support and update its tests accordingly
+* Routes bind paths and middleware, then call controllers.
+* Controllers read request data, call services or data functions, and return structured JSON responses.
+* Domain decisions must not be embedded in route registration.
+* Middleware handles cross-cutting request behavior only: parsing, auth, logging, validation, and error handling.
+* Keep HTTP-specific objects (`req`, `res`, `next`) out of pure service/data helpers.
 
 ---
 
-## Validation
+## Validation And Errors
 
-* All inputs must be validated at boundary
-* Never trust client input
-* Validation errors must be structured and consistent
-* Move safe environment-specific backend config, such as port numbers, into development env files instead of hardcoding them
-
----
-
-## Error Handling
-
-* Centralized error handler required
-* No unhandled promise rejections
-* Standardize error response format
+* Validate params, query values, and request bodies before using them.
+* Normalize validated input once at the boundary and pass normalized values inward.
+* Validation failures must return the root structured error shape.
+* Use the centralized error handler for unexpected errors.
+* Promise-returning handlers must either await errors or pass them to Express error handling.
 
 ---
 
-## Imports
+## Backend Imports
 
-* Prefer absolute imports from backend package aliases whenever possible
-* Keep alias paths stable and domain-oriented
-* Use relative imports only when an alias would make the code less clear
+Use package import aliases from `backend/package.json`:
+
+* `#app`
+* `#controllers/*`
+* `#data/*`
+* `#middleware/*`
+* `#routes`
+* `#routes/*`
+* `#utils/*`
+
+Use relative imports only within the same folder when that is clearer than an alias.
 
 ---
 
-## Version Compatibility
+## Backend API Changes
 
-* Do not remove support for older app versions unless explicitly told to deprecate them
-* When behavior depends on app version, make the version check clear and intentional
-* Move older-version-exclusive backend logic into clearly labeled sections or dedicated files when it is no longer part of the latest app path
-* When endpoints are formally deprecated, increment the backend major version in `backend/package.json`
-* When a new backend major version becomes current, move the previous current endpoint version into legacy support if it still needs to work
-* When a version is deprecated and support is intentionally removed, the deprecated version endpoints should no longer work and should be replaced by the new version number in the active app path
-* A function or route should move into legacy support when the current frontend no longer uses it but older supported frontends may still rely on it
-* When functions or routes move into legacy support because current frontends no longer use them, they should emit clear deprecation warnings while continuing to work until deprecation is explicitly approved
-* Before the frontend minimum supported API version is incremented, the backend must pass tests confirming it still supports every API request used by the current frontend
+* Follow root API versioning and contract rules.
+* If backend behavior changes, run the matching API test category from `backend/tests/api/AGENTS.md`.
+* If a current frontend API call is added, removed, or changed, update `backend/tests/api/frontend-contract.test.ts`.
+* Keep legacy-only routes/functions in clearly named files or sections so current-path behavior remains easy to identify.

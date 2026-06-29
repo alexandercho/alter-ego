@@ -2,7 +2,7 @@ FROM node:26-alpine AS dependencies
 
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@10.12.1 --activate
+RUN npm install --global pnpm@10.12.1
 
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
@@ -17,9 +17,8 @@ FROM node:26-alpine AS runtime
 
 WORKDIR /app
 ENV NODE_ENV=production
-ENV PORT=3001
 
-RUN corepack enable && corepack prepare pnpm@10.12.1 --activate
+RUN npm install --global pnpm@10.12.1
 
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --prod --frozen-lockfile
